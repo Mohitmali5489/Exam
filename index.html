@@ -89,16 +89,24 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 #search-input::placeholder { color: var(--md-on-surface-var); }
 
 /* ══════════════════════════════
-   LOADER
+   SHIMMER LOADING EFFECT
 ══════════════════════════════ */
-#loader {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--md-bg); z-index: 9999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 16px; transition: opacity 0.3s;
+@keyframes shimmer-anim {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
 }
-.spinner { width: 40px; height: 40px; border: 4px solid var(--md-primary-dim); border-top: 4px solid var(--md-primary); border-radius: 50%; animation: spin 1s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.shimmer-bg {
+  background-color: #f1f3f4;
+  background-image: linear-gradient(90deg, #f1f3f4 0px, #e8eaed 40px, #f1f3f4 80px);
+  background-size: 600px 100%;
+  animation: shimmer-anim 1.5s infinite linear;
+}
+.shimmer-bg-dark {
+  background-color: rgba(255,255,255,0.1);
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.2) 40px, rgba(255,255,255,0.1) 80px);
+  background-size: 600px 100%;
+  animation: shimmer-anim 1.5s infinite linear;
+}
 
 /* ══════════════════════════════
    COMPONENTS
@@ -236,12 +244,6 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 
 <div id="app">
 
-  <!-- INITIAL LOADER -->
-  <div id="loader">
-    <div class="spinner"></div>
-    <div style="color:var(--md-on-surface-var); font-weight:500; font-size:14px;">Syncing Data...</div>
-  </div>
-
   <div id="body">
     
     <!-- ─── HOME ─── -->
@@ -375,9 +377,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 /* ═══════════════════════════════════════
    SUPABASE INITIALIZATION & STATE
 ═══════════════════════════════════════ */
+// FIXED: Renamed the variable to 'supabaseClient' to avoid conflicting with the global 'window.supabase'
 const supabaseUrl = 'https://bhapahazfsxtozpuftvm.supabase.co';
 const supabaseKey = 'sb_publishable_hQXxIGqbJGE_8OXYzymg6g_IRbbtWal';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 let EXAMS = [], QBANK = [], NOTES = [], SYLLABUS = [], PYQS = [], PYQ_YEARS = [];
 let qbankTab = '', sylTab = '', notesTab = '', pyqYear = '';
@@ -489,12 +492,75 @@ function tickCD() {
   $('#cd-m').textContent = pad(Math.floor((diff % 3600000)  / 60000));
   $('#cd-s').textContent = pad(Math.floor((diff % 60000)    / 1000));
   
-  // Anchor date logic (defaults to 1 month prior to next exam for progress bar)
+  // Anchor date logic (defaults to 30 days prior to next exam for progress bar)
   const anchor = new Date(next.dt.getTime() - (30 * 24 * 60 * 60 * 1000)); 
   const pct = Math.min(100, Math.max(0, (now - anchor) / (next.dt - anchor) * 100));
   $('#cd-bar').style.width = pct.toFixed(1)+'%'; $('#cd-pct').textContent = pct.toFixed(0)+'%';
 }
 setInterval(tickCD, 1000);
+
+/* ═══════════════════════════════════════
+   SHIMMER PRE-RENDER FUNCTION
+═══════════════════════════════════════ */
+function showShimmers() {
+  const noteShimmer = `
+    <div class="note-card" style="box-shadow:none; border:1px solid var(--md-outline);">
+      <div class="note-icon shimmer-bg"></div>
+      <div class="note-body">
+        <div class="shimmer-bg" style="height:14px; width:70%; border-radius:4px; margin-bottom:6px;"></div>
+        <div class="shimmer-bg" style="height:12px; width:40%; border-radius:4px;"></div>
+      </div>
+    </div>
+  `.repeat(4);
+
+  const listShimmer = `
+    <div class="g-item" style="box-shadow:none; border:1px solid var(--md-outline);">
+      <div class="gi-lead shimmer-bg" style="border-radius:var(--radius-md);"></div>
+      <div class="gi-body">
+        <div class="shimmer-bg" style="height:14px; width:70%; border-radius:4px; margin-bottom:6px;"></div>
+        <div class="shimmer-bg" style="height:12px; width:40%; border-radius:4px;"></div>
+      </div>
+    </div>
+  `.repeat(4);
+
+  const examShimmer = `
+    <div class="exam-card" style="box-shadow:none; border:1px solid var(--md-outline);">
+      <div class="ec-date shimmer-bg"></div>
+      <div class="ec-info">
+        <div class="shimmer-bg" style="height:14px; width:80%; border-radius:4px; margin-bottom:6px;"></div>
+        <div class="shimmer-bg" style="height:12px; width:50%; border-radius:4px;"></div>
+      </div>
+    </div>
+  `.repeat(3);
+
+  const tabShimmer = `
+    <div style="display:flex; gap:8px; padding:14px 16px;">
+      <div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div>
+      <div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div>
+      <div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div>
+    </div>
+  `;
+
+  // Inject Shimmers everywhere
+  $('#cd-name').innerHTML = '<div class="shimmer-bg-dark" style="height:20px; width:60%; border-radius:4px; margin:2px 0;"></div>';
+  $('#cd-meta').innerHTML = '<div class="shimmer-bg-dark" style="height:14px; width:40%; border-radius:4px;"></div>';
+  
+  $('#home-exams').innerHTML = examShimmer;
+  $('#tt-cards').innerHTML = examShimmer;
+  
+  $('#qbank-tabs').innerHTML = tabShimmer;
+  $('#qbank-list').innerHTML = noteShimmer;
+  
+  $('#pyq-list').innerHTML = listShimmer;
+  $('#pattern-list').innerHTML = listShimmer;
+  
+  $('#syl-tabs').innerHTML = tabShimmer;
+  $('#syl-acc').innerHTML = listShimmer;
+
+  $('#notes-tabs').innerHTML = tabShimmer;
+  $('#notes-list').innerHTML = noteShimmer;
+}
+
 
 /* ═══════════════════════════════════════
    RENDER UI
@@ -591,7 +657,6 @@ function renderSyllabus() {
 
   units.forEach(unit => {
     const item = document.createElement('div'); item.className = 'g-acc';
-    // Handle json format whether it is already array or stringified json
     let topics = typeof unit.topics === 'string' ? JSON.parse(unit.topics) : unit.topics;
     
     item.innerHTML = `<div class="g-acc-hd"><div class="g-acc-lead" style="background:${exam.dim};"><span class="msr" style="color:${exam.color};">menu_book</span></div><div class="g-acc-info"><div class="g-acc-title">${unit.title}</div><div class="g-acc-count">${topics.length} topics</div></div><div class="g-acc-chevron"><span class="msr">expand_more</span></div></div><div class="g-acc-body">${topics.map(t => `<div class="g-acc-topic"><div class="g-acc-bullet" style="background:${exam.color};"></div><span>${t}</span></div>`).join('')}</div>`;
@@ -602,6 +667,7 @@ function renderSyllabus() {
 
 function renderPattern() {
   const wrap = $('#pattern-list'); wrap.innerHTML = '';
+  if(!EXAMS.length) { wrap.innerHTML = '<div class="empty-state">Pattern details pending.</div>'; return; }
   EXAMS.forEach(e => {
     const item = document.createElement('div'); item.className = 'g-item';
     item.innerHTML = `<div class="gi-lead" style="background:${e.dim};"><span class="msr" style="color:${e.color};">bar_chart</span></div><div class="gi-body"><div class="gi-title">${e.paper}</div><div class="gi-sub">${e.credits} Credits  ·  Paper Pattern</div></div><div class="gi-trail"><span class="msr s20" style="color:${e.color};">chevron_right</span></div>`;
@@ -633,32 +699,27 @@ $('#search-input').addEventListener('input', (e) => {
   
   let results = [];
 
-  // Search Exams
   EXAMS.forEach(ex => {
     if(ex.paper.toLowerCase().includes(query) || ex.short_name.toLowerCase().includes(query))
       results.push({ type: 'Exam', title: ex.paper, sub: ex.short_name + ' · Schedule', icon: 'school', color: ex.color, dim: ex.dim, action: () => { navTo('tt'); }});
   });
 
-  // Search Notes
   NOTES.forEach(n => {
     if(n.title.toLowerCase().includes(query) || n.tag.toLowerCase().includes(query))
       results.push({ type: 'Note', title: n.title, sub: n.exam_short_name + ' · ' + n.tag, icon: n.icon, color: n.color, dim: n.dim, action: () => { openPdf(n.pdf_url); }});
   });
 
-  // Search QBank
   QBANK.forEach(q => {
     if(q.title.toLowerCase().includes(query) || q.tag.toLowerCase().includes(query))
       results.push({ type: 'QBank', title: q.title, sub: q.exam_short_name + ' · ' + q.tag, icon: q.icon, color: q.color, dim: q.dim, action: () => { openPdf(q.pdf_url); }});
   });
 
-  // Search PYQs
   PYQS.forEach(p => {
     const ex = EXAMS.find(x => x.short_name === p.exam_short_name);
     if(ex && (ex.paper.toLowerCase().includes(query) || p.year_range.includes(query)))
       results.push({ type: 'PYQ', title: ex.paper + ' (' + p.year_range + ')', sub: 'Previous Year Paper', icon: 'history_edu', color: '#EA4335', dim: '#FCE8E6', action: () => { openPdf(p.pdf_url); }});
   });
 
-  // Search Syllabus
   SYLLABUS.forEach(s => {
     let tArr = typeof s.topics === 'string' ? JSON.parse(s.topics) : s.topics;
     let matchedTopics = tArr.filter(t => t.toLowerCase().includes(query));
@@ -670,7 +731,7 @@ $('#search-input').addEventListener('input', (e) => {
   if(!results.length) { wrap.innerHTML = '<div class="empty-state">No results found for "'+query+'"</div>'; return; }
 
   wrap.innerHTML = '';
-  results.slice(0, 15).forEach(r => { // Show max 15 results
+  results.slice(0, 15).forEach(r => {
     const item = document.createElement('div'); item.className = 'g-item';
     item.innerHTML = `<div class="gi-lead" style="background:${r.dim};"><span class="msr" style="color:${r.color};">${r.icon}</span></div><div class="gi-body"><div class="gi-title">${r.title}</div><div class="gi-sub">${r.type} · ${r.sub}</div></div><div class="gi-trail"><span class="msr s20" style="color:var(--md-on-surface-var);">chevron_right</span></div>`;
     item.onclick = r.action;
@@ -682,17 +743,20 @@ $('#search-input').addEventListener('input', (e) => {
    DATA FETCHING (INIT APP)
 ═══════════════════════════════════════ */
 async function initApp() {
+  // 1. Immediately show shimmers in all lists before the network request
+  showShimmers();
+
   try {
+    // 2. Fetch data via supabaseClient
     const [examsRes, qbankRes, notesRes, sylRes, pyqRes, pyqYearsRes] = await Promise.all([
-      supabase.from('exams').select('*').order('exam_date', { ascending: true }),
-      supabase.from('qbank').select('*'),
-      supabase.from('notes').select('*'),
-      supabase.from('syllabus').select('*').order('unit_order', { ascending: true }),
-      supabase.from('pyqs').select('*'),
-      supabase.from('pyq_years').select('*').order('year_range', { ascending: false })
+      supabaseClient.from('exams').select('*').order('exam_date', { ascending: true }),
+      supabaseClient.from('qbank').select('*'),
+      supabaseClient.from('notes').select('*'),
+      supabaseClient.from('syllabus').select('*').order('unit_order', { ascending: true }),
+      supabaseClient.from('pyqs').select('*'),
+      supabaseClient.from('pyq_years').select('*').order('year_range', { ascending: false })
     ]);
 
-    // Apply accurate JS dates for countdown based on date + parsed time
     EXAMS = (examsRes.data || []).map(e => ({
       ...e, dt: new Date(e.exam_date + 'T' + parseTime(e.start_time))
     }));
@@ -703,7 +767,7 @@ async function initApp() {
     PYQS = pyqRes.data || [];
     PYQ_YEARS = (pyqYearsRes.data || []).map(y => y.year_range);
 
-    // Set Default Tabs
+    // Default Tabs
     if (EXAMS.length > 0) {
       qbankTab = EXAMS[0].short_name;
       sylTab = EXAMS[0].short_name;
@@ -711,7 +775,7 @@ async function initApp() {
     }
     if (PYQ_YEARS.length > 0) pyqYear = PYQ_YEARS[0];
 
-    // Render Data
+    // 3. Render real data (overwriting the shimmers)
     renderHomeExams();
     renderTT();
     renderQbank();
@@ -719,17 +783,13 @@ async function initApp() {
     renderSyllabus();
     renderPattern();
     renderNotes();
+    tickCD(); 
     
     $$('.qg-card').forEach(el => addRipple(el, 'rgba(0,0,0,.06)'));
-    tickCD(); // force early tick
-
-    // Hide loader
-    $('#loader').style.opacity = '0';
-    setTimeout(() => $('#loader').style.display = 'none', 300);
 
   } catch (err) {
     console.error("Supabase fetch error:", err);
-    $('#loader').innerHTML = '<div style="color:var(--md-error);">Failed to load database. Check console.</div>';
+    toast('Failed to sync data. Please refresh.', 'error');
   }
 }
 
