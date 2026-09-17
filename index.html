@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Study Planner</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════
+   MATERIAL SYMBOLS SETUP
+══════════════════════════════════════ */
+.msr {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal; font-style: normal;
+  font-size: 24px; line-height: 1;
+  letter-spacing: normal; text-transform: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  white-space: nowrap; word-wrap: normal; direction: ltr;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+.msr.fill   { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.msr.w300   { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+.msr.w500   { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+.msr.w700   { font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24; }
+.msr.fill-w5{ font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+.msr.s20    { font-size: 20px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+.msr.s18    { font-size: 18px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+.msr.s28    { font-size: 28px; font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 40; }
+.msr.s32    { font-size: 32px; font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 40; }
+
+/* ══════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════ */
+:root {
+  --md-primary:        #1A73E8;
+  --md-primary-dim:    #E8F0FE;
+  --md-primary-text:   #1967D2;
+  --md-surface:        #FFFFFF;
+  --md-surface-2:      #F1F3F4;
+  --md-bg:             #F8F9FA;
+  --md-on-surface:     #202124;
+  --md-on-surface-var: #5F6368;
+  --md-outline:        #DADCE0;
+  --radius-sm:         8px;
+  --radius-md:         12px;
+  --radius-xl:         20px;
+  --radius-full:       999px;
+  --shadow-1: 0 1px 2px rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+  --shadow-2: 0 1px 2px rgba(60,64,67,.3), 0 2px 6px 2px rgba(60,64,67,.15);
+  --ease: cubic-bezier(.2,0,0,1);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  background: #E8EAED;
+  display: flex; justify-content: center; align-items: center;
+  font-family: 'Roboto', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── App Shell ── */
+#app {
+  position: relative;
+  width: 100%; max-width: 412px;
+  height: 100%; max-height: 915px;
+  background: var(--md-bg);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,.28);
+}
+@media (min-height: 916px) and (min-width: 413px) {
+  #app { border-radius: 28px; }
+}
+
+/* ══════════════════════════════
+   SCROLL BODY
+══════════════════════════════ */
+#body {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding-bottom: 24px;
+  background: var(--md-bg);
+}
+#body::-webkit-scrollbar { display: none; }
+
+/* ══════════════════════════════
+   VIEWS
+══════════════════════════════ */
+.view { display: none; }
+.view.active { display: block; animation: fadein .22s var(--ease); }
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════
+   SEARCH BAR
+══════════════════════════════ */
+.g-search {
+  margin: 16px 16px 0; background: var(--md-surface);
+  border-radius: var(--radius-full); height: 52px;
+  display: flex; align-items: center; padding: 0 16px; gap: 10px;
+  box-shadow: var(--shadow-1); cursor: pointer;
+}
+.g-search .msr { color: var(--md-on-surface-var); font-size: 22px; flex-shrink: 0; }
+.g-search-text { flex: 1; font-size: 16px; color: var(--md-on-surface-var); pointer-events: none; }
+
+/* ══════════════════════════════
+   FILTER CHIPS
+══════════════════════════════ */
+.chip-row {
+  display: flex; gap: 8px; padding: 12px 16px 0; overflow-x: auto;
+}
+.chip-row::-webkit-scrollbar { display: none; }
+.md-chip {
+  flex-shrink: 0; height: 32px; padding: 0 12px 0 10px;
+  border: 1px solid var(--md-outline); border-radius: var(--radius-full);
+  background: var(--md-surface); display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--md-on-surface); cursor: pointer;
+  transition: all .15s;
+}
+.md-chip .msr { font-size: 16px; }
+.md-chip.active, .md-chip:hover {
+  background: var(--md-primary-dim); border-color: var(--md-primary); color: var(--md-primary-text);
+}
+.md-chip.active .msr { color: var(--md-primary); font-variation-settings: 'FILL' 1; }
+
+/* ══════════════════════════════
+   SECTION HEADERS
+══════════════════════════════ */
+.sec-head {
+  display: flex; align-items: center; justify-content: space-between; padding: 20px 16px 8px;
+}
+.sec-head-title { font-size: 11px; font-weight: 600; color: var(--md-on-surface-var); letter-spacing: 1px; text-transform: uppercase; }
+.sec-head-action { font-size: 13px; font-weight: 500; color: var(--md-primary); cursor: pointer; display: flex; align-items: center; gap: 2px; }
+
+/* ══════════════════════════════
+   COUNTDOWN CARD
+══════════════════════════════ */
+.countdown-card {
+  background: var(--md-surface); border-radius: var(--radius-xl); margin: 0 16px; overflow: hidden; box-shadow: var(--shadow-1);
+}
+.cd-banner { background: var(--md-primary); padding: 16px 20px 14px; }
+.cd-banner-eyebrow { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.8); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 6px; }
+.cd-banner-name { font-family: 'Google Sans', sans-serif; font-size: 17px; font-weight: 500; color: #fff; margin-bottom: 3px; }
+.cd-banner-meta { font-size: 12px; color: rgba(255,255,255,.75); display: flex; align-items: center; gap: 6px; }
+.cd-body { padding: 16px 20px 18px; }
+.cd-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.cd-tile { background: var(--md-primary-dim); border-radius: var(--radius-md); padding: 12px 4px; text-align: center; }
+.cd-num { font-family: 'Google Sans Display', sans-serif; font-size: 30px; font-weight: 700; color: var(--md-primary); line-height: 1; }
+.cd-unit { font-size: 10px; font-weight: 600; color: var(--md-primary-text); text-transform: uppercase; margin-top: 4px; }
+.cd-progress-row { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.cd-track { flex: 1; height: 4px; background: var(--md-primary-dim); border-radius: var(--radius-full); overflow: hidden; }
+.cd-fill  { height: 100%; background: var(--md-primary); border-radius: var(--radius-full); transition: width 1s linear; }
+.cd-pct   { font-size: 12px; font-weight: 500; color: var(--md-primary); }
+
+/* ══════════════════════════════
+   HOME – EXAM LIST
+══════════════════════════════ */
+.exam-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.exam-card {
+  background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1);
+  display: flex; align-items: center; padding: 12px 12px 12px 16px; gap: 14px; cursor: pointer;
+}
+.exam-card.done { opacity: .6; }
+.ec-date { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+.ec-day   { font-family: 'Google Sans', sans-serif; font-size: 20px; font-weight: 700; line-height: 1; }
+.ec-month { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-top: 1px; }
+.ec-info  { flex: 1; min-width: 0; }
+.ec-paper { font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--md-on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ec-sub   { font-size: 12px; color: var(--md-on-surface-var); margin-top: 2px; }
+.ec-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.ec-cred  { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: var(--radius-full); }
+.pulse-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ══════════════════════════════
+   QUICK ACCESS GRID
+══════════════════════════════ */
+.quick-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; padding: 0 16px; }
+.qg-card {
+  background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1);
+  padding: 16px 8px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;
+}
+.qg-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
+.qg-label { font-size: 11px; font-weight: 500; color: var(--md-on-surface); text-align: center; }
+
+/* ══════════════════════════════
+   VIEW STRIP
+══════════════════════════════ */
+.view-strip { padding: 20px 16px 18px; }
+.vs-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; opacity: .8; }
+.vs-title { font-family: 'Google Sans Display', sans-serif; font-size: 28px; font-weight: 700; line-height: 1.1; }
+.vs-sub { font-size: 13px; margin-top: 6px; opacity: .8; }
+
+/* ══════════════════════════════
+   TIMETABLE
+══════════════════════════════ */
+.tt-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.tt-card { background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); overflow: hidden; display: flex; cursor: pointer; }
+.tt-bar   { width: 4px; flex-shrink: 0; }
+.tt-body  { flex: 1; min-width: 0; padding: 14px; }
+.tt-top   { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.tt-paper { font-family: 'Google Sans', sans-serif; font-size: 15px; font-weight: 500; color: var(--md-on-surface); }
+.tt-badge { flex-shrink: 0; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: var(--radius-full); }
+.tt-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.tt-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 4px 10px; border-radius: var(--radius-full); }
+.tt-chip .msr { font-size: 14px; }
+
+/* ══════════════════════════════
+   SUBJECT TABS
+══════════════════════════════ */
+.sub-tabs {
+  background: var(--md-surface); border-bottom: 1px solid var(--md-outline);
+  display: flex; overflow-x: auto; position: sticky; top: 0; z-index: 10;
+}
+.sub-tabs::-webkit-scrollbar { display: none; }
+.sub-tab {
+  flex-shrink: 0; padding: 14px 16px; font-size: 14px; font-weight: 500;
+  color: var(--md-on-surface-var); cursor: pointer; border-bottom: 3px solid transparent; transition: color .15s;
+}
+.sub-tab.active { color: var(--md-primary); border-bottom-color: var(--md-primary); }
+
+/* ══════════════════════════════
+   LIST ITEMS
+══════════════════════════════ */
+.list-section { padding: 8px 16px; display: flex; flex-direction: column; gap: 8px; }
+.g-item {
+  background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1);
+  display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer;
+}
+.gi-lead { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.gi-body { flex: 1; min-width: 0; }
+.gi-title { font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--md-on-surface); }
+.gi-sub   { font-size: 12px; color: var(--md-on-surface-var); margin-top: 2px; }
+.gi-trail { flex-shrink: 0; display: flex; align-items: center; color: var(--md-on-surface-var); }
+
+/* ══════════════════════════════
+   ACCORDION (Syllabus)
+══════════════════════════════ */
+.g-accordion { padding: 0 16px; display: flex; flex-direction: column; gap: 6px; }
+.g-acc { background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); overflow: hidden; }
+.g-acc-hd { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; }
+.g-acc-lead { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.g-acc-info { flex: 1; min-width: 0; }
+.g-acc-title { font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--md-on-surface); }
+.g-acc-count { font-size: 12px; color: var(--md-on-surface-var); margin-top: 1px; }
+.g-acc-chevron { flex-shrink: 0; color: var(--md-on-surface-var); transition: transform .25s var(--ease); }
+.g-acc.open .g-acc-chevron { transform: rotate(180deg); }
+.g-acc-body { max-height: 0; overflow: hidden; transition: max-height .3s var(--ease); border-top: 0px solid var(--md-outline); }
+.g-acc.open .g-acc-body { max-height: 800px; border-top-width: 1px; }
+.g-acc-topic { display: flex; align-items: flex-start; gap: 10px; padding: 10px 16px 10px 68px; border-bottom: 1px solid var(--md-outline); font-size: 13px; color: var(--md-on-surface-var); }
+.g-acc-bullet { width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; }
+
+/* ══════════════════════════════
+   NOTES / QBANK
+══════════════════════════════ */
+.notes-wrap { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
+.note-card {
+  background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1);
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; cursor: pointer; position: relative; overflow: hidden;
+}
+.note-strip { width: 4px; border-radius: var(--radius-full); align-self: stretch; flex-shrink: 0; }
+.note-icon  { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.note-body  { flex: 1; min-width: 0; }
+.note-title { font-family: 'Google Sans', sans-serif; font-size: 14px; font-weight: 500; color: var(--md-on-surface); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.note-meta  { font-size: 12px; color: var(--md-on-surface-var); margin-top: 3px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.note-pill  { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-full); }
+.note-dl    { color: var(--md-on-surface-var); flex-shrink: 0; }
+
+/* ══════════════════════════════
+   PYQ YEAR CHIPS
+══════════════════════════════ */
+.year-scroller { display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; background: var(--md-surface); border-bottom: 1px solid var(--md-outline); }
+.year-scroller::-webkit-scrollbar { display: none; }
+.y-chip {
+  flex-shrink: 0; padding: 6px 16px; border-radius: var(--radius-full); font-size: 13px; font-weight: 500;
+  border: 1px solid var(--md-outline); background: var(--md-surface); color: var(--md-on-surface); cursor: pointer; display: flex; align-items: center; gap: 6px;
+}
+.y-chip.active { background: var(--md-error); color: #fff; border-color: var(--md-error); }
+.y-chip.active .msr { color: #fff; font-variation-settings: 'FILL' 1; }
+
+/* ══════════════════════════════
+   IN-APP PDF VIEWER OVERLAY
+══════════════════════════════ */
+.pdf-viewer-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--md-bg); z-index: 200;
+  display: flex; flex-direction: column;
+  transform: translateY(100%); transition: transform 0.3s var(--ease);
+}
+.pdf-viewer-overlay.open { transform: translateY(0); }
+.pdf-header {
+  height: 64px; background: var(--md-surface); border-bottom: 1px solid var(--md-outline);
+  display: flex; align-items: center; padding: 0 8px; flex-shrink: 0;
+}
+.pdf-back-btn {
+  width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.pdf-title-text {
+  flex: 1; font-family: 'Google Sans', sans-serif; font-size: 18px; font-weight: 500; color: var(--md-on-surface);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 4px; padding-right: 16px;
+}
+.pdf-iframe { flex: 1; width: 100%; border: none; background: #fff; }
+
+/* ══════════════════════════════
+   ANIMATIONS & MISC
+══════════════════════════════ */
+@keyframes ring { 0%,100% { box-shadow: 0 0 0 0 rgba(26,115,232,.55); } 60% { box-shadow: 0 0 0 7px rgba(26,115,232,0); } }
+.pulse { animation: ring 2.2s infinite; }
+.pb16 { padding-bottom: 16px; }
+.empty-state { padding: 32px 16px; text-align: center; color: var(--md-on-surface-var); font-size: 14px; font-family: 'Roboto', sans-serif; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  
+  <!-- SCROLL BODY -->
+  <div id="body">
+
+    <!-- HOME -->
+    <div class="view active" id="view-home">
+      <div class="g-search">
+        <span class="msr s20">search</span>
+        <div class="g-search-text">Search papers, topics, notes…</div>
+      </div>
+      <div class="chip-row" id="home-chips">
+        <div class="md-chip active" data-chip="schedule" onclick="chipClick(this,'tt')"><span class="msr">calendar_month</span>Schedule</div>
+        <div class="md-chip" data-chip="countdown" onclick="chipClick(this,'home')"><span class="msr">timer</span>Countdown</div>
+        <div class="md-chip" data-chip="qbank" onclick="chipClick(this,'qbank')"><span class="msr">quiz</span>Q.Bank</div>
+        <div class="md-chip" data-chip="notes" onclick="chipClick(this,'notes')"><span class="msr">sticky_note_2</span>Notes</div>
+        <div class="md-chip" data-chip="pattern" onclick="chipClick(this,'pattern')"><span class="msr">bar_chart</span>Pattern</div>
+      </div>
+
+      <!-- Countdown -->
+      <div class="sec-head">
+        <div class="sec-head-title">Next Exam</div>
+        <div class="sec-head-action" onclick="navTo('tt')">See all<span class="msr">chevron_right</span></div>
+      </div>
+      <div class="countdown-card">
+        <div class="cd-banner">
+          <div class="cd-banner-eyebrow"><span class="msr">timer</span>Countdown</div>
+          <div class="cd-banner-name" id="cd-name">Loading…</div>
+          <div class="cd-banner-meta"><span class="msr">event</span><span id="cd-meta"></span></div>
+        </div>
+        <div class="cd-body">
+          <div class="cd-tiles">
+            <div class="cd-tile"><div class="cd-num" id="cd-d">--</div><div class="cd-unit">Days</div></div>
+            <div class="cd-tile"><div class="cd-num" id="cd-h">--</div><div class="cd-unit">Hours</div></div>
+            <div class="cd-tile"><div class="cd-num" id="cd-m">--</div><div class="cd-unit">Mins</div></div>
+            <div class="cd-tile"><div class="cd-num" id="cd-s">--</div><div class="cd-unit">Secs</div></div>
+          </div>
+          <div class="cd-progress-row">
+            <div class="cd-track"><div class="cd-fill" id="cd-bar" style="width:0%"></div></div>
+            <div class="cd-pct" id="cd-pct">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resources -->
+      <div class="sec-head"><div class="sec-head-title">Resources</div></div>
+      <div class="quick-grid">
+        <div class="qg-card" onclick="navTo('qbank')"><div class="qg-icon" style="background:#E8F0FE;"><span class="msr s28 w300" style="color:#1A73E8;">quiz</span></div><div class="qg-label">Question Bank</div></div>
+        <div class="qg-card" onclick="navTo('pyq')"><div class="qg-icon" style="background:#FCE8E6;"><span class="msr s28 w300" style="color:#EA4335;">history_edu</span></div><div class="qg-label">PYQ Papers</div></div>
+        <div class="qg-card" onclick="navTo('syllabus')"><div class="qg-icon" style="background:#E6F4EA;"><span class="msr s28 w300" style="color:#34A853;">checklist</span></div><div class="qg-label">Syllabus</div></div>
+        <div class="qg-card" onclick="navTo('pattern')"><div class="qg-icon" style="background:#FEF7E0;"><span class="msr s28 w300" style="color:#B06000;">bar_chart</span></div><div class="qg-label">Paper Pattern</div></div>
+        <div class="qg-card" onclick="navTo('notes')"><div class="qg-icon" style="background:#F3E8FD;"><span class="msr s28 w300" style="color:#A142F4;">sticky_note_2</span></div><div class="qg-label">Notes</div></div>
+        <div class="qg-card" onclick="navTo('tt')"><div class="qg-icon" style="background:#E8F0FE;"><span class="msr s28 w300" style="color:#1A73E8;">calendar_month</span></div><div class="qg-label">Timetable</div></div>
+      </div>
+
+      <div class="sec-head">
+        <div class="sec-head-title">All Exams</div>
+        <div class="sec-head-action" onclick="navTo('tt')">Timetable<span class="msr">arrow_forward</span></div>
+      </div>
+      <div class="exam-list" id="home-exams"></div>
+      <div class="pb16"></div>
+    </div>
+
+    <!-- TIMETABLE -->
+    <div class="view" id="view-tt">
+      <div class="view-strip" style="background:#1A73E8;color:#fff;">
+        <div class="vs-eyebrow">October 2026</div>
+        <div class="vs-title">Exam Schedule</div>
+        <div class="vs-sub">SY BCom · 6 Papers · Oct 6 – Oct 16</div>
+      </div>
+      <div class="tt-list" id="tt-cards"></div>
+    </div>
+
+    <!-- QUESTION BANK -->
+    <div class="view" id="view-qbank">
+      <div class="view-strip" style="background:#1A73E8;color:#fff;">
+        <div class="vs-eyebrow">Study Tool</div>
+        <div class="vs-title">Question Bank</div>
+        <div class="vs-sub">Important questions per paper</div>
+      </div>
+      <div class="sub-tabs" id="qbank-tabs"></div>
+      <div style="height:8px;"></div>
+      <div class="notes-wrap" id="qbank-list"></div>
+      <div class="pb16"></div>
+    </div>
+
+    <!-- PYQ -->
+    <div class="view" id="view-pyq">
+      <div class="view-strip" style="background:#EA4335;color:#fff;">
+        <div class="vs-eyebrow">Practice</div>
+        <div class="vs-title">Previous Year Papers</div>
+        <div class="vs-sub">Real exam papers from past years</div>
+      </div>
+      <div class="year-scroller" id="pyq-years"></div>
+      <div class="list-section" id="pyq-list"></div>
+    </div>
+
+    <!-- SYLLABUS -->
+    <div class="view" id="view-syllabus">
+      <div class="view-strip" style="background:#34A853;color:#fff;">
+        <div class="vs-eyebrow">Reference</div>
+        <div class="vs-title">Syllabus</div>
+        <div class="vs-sub">Unit-wise topics for all 6 papers</div>
+      </div>
+      <div class="sub-tabs" id="syl-tabs"></div>
+      <div style="height:8px;"></div>
+      <div class="g-accordion" id="syl-acc"></div>
+      <div class="pb16"></div>
+    </div>
+
+    <!-- PATTERN -->
+    <div class="view" id="view-pattern">
+      <div class="view-strip" style="background:#F9AB00;color:#202124;">
+        <div class="vs-eyebrow" style="color:#5F6368;">Reference</div>
+        <div class="vs-title">Paper Pattern</div>
+        <div class="vs-sub" style="opacity:.7;">Marks scheme & exam structure</div>
+      </div>
+      <div style="height:12px;"></div>
+      <div class="list-section" id="pattern-list"></div>
+      <div class="pb16"></div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="view" id="view-notes">
+      <div class="view-strip" style="background:#A142F4;color:#fff;">
+        <div class="vs-eyebrow">Study Material</div>
+        <div class="vs-title">Notes</div>
+        <div class="vs-sub">Chapter-wise revision material</div>
+      </div>
+      <div class="sub-tabs" id="notes-tabs"></div>
+      <div style="height:8px;"></div>
+      <div class="notes-wrap" id="notes-list"></div>
+      <div class="pb16"></div>
+    </div>
+  </div>
+
+  <!-- IN-APP PDF VIEWER -->
+  <div id="pdf-overlay" class="pdf-viewer-overlay">
+    <div class="pdf-header">
+      <div class="pdf-back-btn" onclick="closePdf()"><span class="msr">arrow_back</span></div>
+      <div class="pdf-title-text" id="pdf-title">Document</div>
+    </div>
+    <iframe id="pdf-frame" class="pdf-iframe" src=""></iframe>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const EXAMS = [
+  { id:1, short:'FA-V',  paper:'Financial Accounting - V', date:'6 October 2026', dt:new Date('2026-10-06T14:30:00'), day:'Tuesday', start:'02:30 p.m.', end:'04:30 p.m.', credits:4, color:'#1A73E8', dim:'#E8F0FE', txt:'#1967D2' },
+  { id:2, short:'DIT-I', paper:'Direct and Indirect Tax - I', date:'7 October 2026', dt:new Date('2026-10-07T14:30:00'), day:'Wednesday', start:'02:30 p.m.', end:'04:30 p.m.', credits:4, color:'#EA4335', dim:'#FCE8E6', txt:'#C5221F' },
+  { id:3, short:'IKS',   paper:'Indian Knowledge System in Accounting & Finance', date:'8 October 2026', dt:new Date('2026-10-08T14:30:00'), day:'Thursday', start:'02:30 p.m.', end:'03:30 p.m.', credits:2, color:'#34A853', dim:'#E6F4EA', txt:'#137333' },
+  { id:4, short:'CFR-I', paper:'Corporate Financial Reporting - I', date:'9 October 2026', dt:new Date('2026-10-09T14:30:00'), day:'Friday', start:'02:30 p.m.', end:'04:30 p.m.', credits:4, color:'#F9AB00', dim:'#FEF7E0', txt:'#B06000' },
+  { id:5, short:'SRS',   paper:'Sustainability Reporting and Standards', date:'12 October 2026', dt:new Date('2026-10-12T14:30:00'), day:'Monday', start:'02:30 p.m.', end:'03:30 p.m.', credits:2, color:'#34A853', dim:'#E6F4EA', txt:'#137333' },
+  { id:6, short:'FMM',   paper:'Fundamentals of Marketing Management', date:'16 October 2026', dt:new Date('2026-10-16T10:30:00'), day:'Friday', start:'10:30 a.m.', end:'12:30 p.m.', credits:4, color:'#A142F4', dim:'#F3E8FD', txt:'#7B1FA2' }
+];
+
+const SYLLABUS = {
+  'FA-V': [ { title:'Unit 1 · Amalgamation of Companies', topics:['Types of amalgamation', 'Purchase consideration', 'Entries'] } ],
+  'DIT-I': [ { title:'Unit 1 · Basic Concepts', topics:['Assessee', 'Previous Year', 'Residential status'] } ]
+  // (Abbreviated for brevity, normally you fetch all this from DB)
+};
+
+const QBANK = {
+  'FA-V': [
+    { title:'Amalgamation Questions', pages:5, tag:'Unit 1', upd:'New', icon:'quiz', color:'#1A73E8', dim:'#E8F0FE', src:'https://pdfobject.com/pdf/sample.pdf' },
+    { title:'Internal Reconstruction', pages:4, tag:'Unit 2', upd:'Updated', icon:'quiz', color:'#EA4335', dim:'#FCE8E6', src:'https://pdfobject.com/pdf/sample.pdf' }
+  ],
+  'DIT-I': [
+    { title:'Salary Computation Set', pages:8, tag:'Unit 2', upd:'New', icon:'quiz', color:'#34A853', dim:'#E6F4EA', src:'https://pdfobject.com/pdf/sample.pdf' }
+  ]
+};
+
+const NOTES = {
+  'FA-V': [
+    { title:'Amalgamation – Complete Notes', pages:24, tag:'Theory + Sums', upd:'2 days ago', icon:'menu_book', color:'#1A73E8', dim:'#E8F0FE', src:'https://pdfobject.com/pdf/sample.pdf' }
+  ],
+  'DIT-I':[
+    { title:'Income Tax – Flash Cards', pages: 8, tag:'Revision', upd:'Today', icon:'style', color:'#1A73E8', dim:'#E8F0FE', src:'https://pdfobject.com/pdf/sample.pdf' }
+  ]
+};
+
+// Explicit array mapping for PYQs to handle cases where some subjects are missing
+const PYQ_YEARS = ['2024–25', '2023–24', '2022–23'];
+const PYQS = [
+  { short:'FA-V',  year:'2024–25', src:'https://pdfobject.com/pdf/sample.pdf' },
+  { short:'DIT-I', year:'2024–25', src:'https://pdfobject.com/pdf/sample.pdf' },
+  { short:'FA-V',  year:'2023–24', src:'https://pdfobject.com/pdf/sample.pdf' },
+  { short:'CFR-I', year:'2023–24', src:'https://pdfobject.com/pdf/sample.pdf' }
+];
+
+/* ═══════════════════════════════════════
+   STATE & UTILS
+═══════════════════════════════════════ */
+let qbankTab = 'FA-V', sylTab = 'FA-V', notesTab = 'FA-V', pyqYear = '2024–25';
+
+const $  = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const pad = n => String(n).padStart(2,'0');
+const isDone = e => new Date() > e.dt;
+const getNext = () => EXAMS.find(e => !isDone(e)) || EXAMS.at(-1);
+
+const dayOf   = d => d.split(' ')[0];
+const monthOf = d => d.split(' ')[1].slice(0,3).toUpperCase();
+
+function addRipple(el) {
+  el.style.position = 'relative'; el.style.overflow = 'hidden';
+  el.addEventListener('pointerdown', ev => {
+    const rect = el.getBoundingClientRect(); const size = Math.max(rect.width, rect.height) * 2.2;
+    const r = document.createElement('span');
+    Object.assign(r.style, {
+      position:'absolute', borderRadius:'50%', pointerEvents:'none', width:size+'px', height:size+'px',
+      left:(ev.clientX - rect.left - size/2)+'px', top:(ev.clientY - rect.top  - size/2)+'px',
+      background: 'rgba(0,0,0,.07)', transform:'scale(0)', animation:'ripple .5s ease-out forwards'
+    });
+    el.append(r); setTimeout(() => r.remove(), 600);
+  });
+}
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+function navTo(view) {
+  $$('.view').forEach(v => v.classList.remove('active'));
+  const el = $(`#view-${view}`);
+  if (el) { el.classList.add('active'); $('#body').scrollTop = 0; }
+}
+function chipClick(el, view) {
+  $$('#home-chips .md-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  if (view !== 'home') navTo(view);
+}
+
+/* ═══════════════════════════════════════
+   IN-APP PDF VIEWER
+═══════════════════════════════════════ */
+function openPdf(title, src) {
+  $('#pdf-title').textContent = title;
+  $('#pdf-frame').src = src;
+  $('#pdf-overlay').classList.add('open');
+}
+function closePdf() {
+  $('#pdf-overlay').classList.remove('open');
+  setTimeout(() => $('#pdf-frame').src = '', 300); // Clear frame after animation
+}
+
+/* ═══════════════════════════════════════
+   COUNTDOWN
+═══════════════════════════════════════ */
+const ANCHOR = new Date('2026-10-01T00:00:00');
+function tickCD() {
+  const next = getNext(), now = new Date(), diff = next.dt - now;
+  $('#cd-name').textContent = next.paper;
+  $('#cd-meta').textContent = `${next.day}, ${next.date}  ·  ${next.start} – ${next.end}`;
+  if (diff <= 0) {
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id => $('#'+id).textContent = '00');
+    $('#cd-bar').style.width = '100%'; $('#cd-pct').textContent = '100%'; return;
+  }
+  $('#cd-d').textContent = pad(Math.floor(diff / 86400000));
+  $('#cd-h').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+  $('#cd-m').textContent = pad(Math.floor((diff % 3600000)  / 60000));
+  $('#cd-s').textContent = pad(Math.floor((diff % 60000)    / 1000));
+  const pct = Math.min(100, Math.max(0, (now - ANCHOR) / (next.dt - ANCHOR) * 100));
+  $('#cd-bar').style.width = pct.toFixed(1)+'%';
+  $('#cd-pct').textContent = pct.toFixed(0)+'%';
+}
+setInterval(tickCD, 1000); tickCD();
+
+/* ═══════════════════════════════════════
+   RENDERING
+═══════════════════════════════════════ */
+function renderHomeExams() {
+  const wrap = $('#home-exams'); wrap.innerHTML = ''; const next = getNext();
+  EXAMS.forEach(e => {
+    const done = isDone(e), isNext = e.id === next.id && !done;
+    const card = document.createElement('div'); card.className = 'exam-card' + (done ? ' done' : '');
+    card.innerHTML = `
+      <div class="ec-date" style="background:${done?'#F1F3F4':e.dim};"><div class="ec-day" style="color:${done?'#9AA0A6':e.color};">${dayOf(e.date)}</div><div class="ec-month" style="color:${done?'#9AA0A6':e.color};">${monthOf(e.date)}</div></div>
+      <div class="ec-info"><div class="ec-paper">${e.paper}</div><div class="ec-sub">${e.day} · ${e.start} – ${e.end}</div></div>
+      <div class="ec-right"><div class="ec-cred" style="background:${done?'#F1F3F4':e.dim};color:${done?'#9AA0A6':e.color};">${done ? 'Done' : e.credits+' Cr'}</div>${isNext ? `<div class="pulse-dot pulse" style="background:${e.color};"></div>` : ''}</div>`;
+    card.onclick = () => navTo('tt'); addRipple(card); wrap.appendChild(card);
+  });
+}
+
+function renderTT() {
+  const wrap = $('#tt-cards'); wrap.innerHTML = ''; const next = getNext();
+  EXAMS.forEach(e => {
+    const done = isDone(e), isNext = e.id === next.id && !done;
+    let bTxt = done ? 'Completed' : (isNext ? 'Next Up' : 'Upcoming');
+    let bSt = done ? 'background:#F1F3F4;color:#9AA0A6;' : (isNext ? `background:${e.color};color:#fff;` : `background:${e.dim};color:${e.txt};`);
+    const card = document.createElement('div'); card.className = 'tt-card';
+    card.innerHTML = `
+      <div class="tt-bar" style="background:${done?'#DADCE0':e.color};"></div>
+      <div class="tt-body">
+        <div class="tt-top"><div class="tt-paper" style="opacity:${done?.6:1};">${e.paper}</div><div class="tt-badge ${isNext?'pulse':''}" style="${bSt}">${bTxt}</div></div>
+        <div class="tt-chips">
+          <div class="tt-chip" style="background:${done?'#F1F3F4':e.dim};color:${done?'#9AA0A6':e.txt};"><span class="msr">event</span>${e.day}, ${e.date}</div>
+          <div class="tt-chip" style="background:#FEF7E0;color:#B06000;"><span class="msr">schedule</span>${e.start} – ${e.end}</div>
+        </div>
+      </div>`;
+    wrap.appendChild(card);
+  });
+}
+
+function buildSubTabs(id, act, cb) {
+  const wrap = $('#'+id); wrap.innerHTML = '';
+  EXAMS.forEach(e => {
+    const t = document.createElement('div'); t.className = 'sub-tab' + (e.short === act ? ' active' : '');
+    t.textContent = e.short; t.onclick = () => cb(e.short); addRipple(t); wrap.appendChild(t);
+  });
+}
+
+function renderQbank() {
+  buildSubTabs('qbank-tabs', qbankTab, k => { qbankTab = k; renderQbank(); });
+  const wrap = $('#qbank-list'); wrap.innerHTML = '';
+  (QBANK[qbankTab]||[]).forEach(q => {
+    const card = document.createElement('div'); card.className = 'note-card';
+    card.innerHTML = `
+      <div class="note-strip" style="background:${q.color};"></div>
+      <div class="note-icon" style="background:${q.dim};"><span class="msr fill-w5" style="color:${q.color};">${q.icon}</span></div>
+      <div class="note-body"><div class="note-title">${q.title}</div><div class="note-meta"><span>${q.pages} pages</span><span>·</span><span>${q.upd}</span><span class="note-pill" style="background:${q.dim};color:${q.color};">${q.tag}</span></div></div>
+      <div class="note-dl"><span class="msr" style="color:${q.color};">picture_as_pdf</span></div>`;
+    card.onclick = () => openPdf(q.title, q.src);
+    addRipple(card); wrap.appendChild(card);
+  });
+}
+
+function renderPYQ() {
+  const yw = $('#pyq-years'); yw.innerHTML = '';
+  PYQ_YEARS.forEach(y => {
+    const c = document.createElement('div'); c.className = 'y-chip' + (y === pyqYear ? ' active' : '');
+    c.innerHTML = `<span class="msr">history_edu</span>${y}`;
+    c.onclick = () => { pyqYear = y; renderPYQ(); }; yw.appendChild(c);
+  });
+  
+  const wrap = $('#pyq-list'); wrap.innerHTML = '';
+  
+  // Filter Explicit PYQ Array by year
+  const availablePyqs = PYQS.filter(p => p.year === pyqYear);
+  
+  if(availablePyqs.length === 0) {
+    wrap.innerHTML = `<div class="empty-state">No papers available for ${pyqYear}.</div>`;
+    return;
+  }
+  
+  availablePyqs.forEach(p => {
+    const e = EXAMS.find(ex => ex.short === p.short);
+    const item = document.createElement('div'); item.className = 'g-item';
+    item.innerHTML = `
+      <div class="gi-lead" style="background:${e.dim};"><span class="msr" style="color:${e.color};">description</span></div>
+      <div class="gi-body"><div class="gi-title">${e.paper}</div><div class="gi-sub">${pyqYear} · October Exam</div></div>
+      <div class="gi-trail"><span class="msr s20" style="color:${e.color};">picture_as_pdf</span></div>`;
+    item.onclick = () => openPdf(`${e.short} · ${pyqYear}`, p.src);
+    addRipple(item); wrap.appendChild(item);
+  });
+}
+
+function renderNotes() {
+  buildSubTabs('notes-tabs', notesTab, k => { notesTab = k; renderNotes(); });
+  const wrap = $('#notes-list'); wrap.innerHTML = '';
+  (NOTES[notesTab]||[]).forEach(n => {
+    const card = document.createElement('div'); card.className = 'note-card';
+    card.innerHTML = `
+      <div class="note-strip" style="background:${n.color};"></div>
+      <div class="note-icon" style="background:${n.dim};"><span class="msr fill-w5" style="color:${n.color};">${n.icon}</span></div>
+      <div class="note-body"><div class="note-title">${n.title}</div><div class="note-meta"><span>${n.pages} pages</span><span>·</span><span>${n.upd}</span><span class="note-pill" style="background:${n.dim};color:${n.color};">${n.tag}</span></div></div>
+      <div class="note-dl"><span class="msr" style="color:${n.color};">picture_as_pdf</span></div>`;
+    card.onclick = () => openPdf(n.title, n.src);
+    addRipple(card); wrap.appendChild(card);
+  });
+}
+
+function renderPattern() {
+  const wrap = $('#pattern-list'); wrap.innerHTML = '';
+  EXAMS.forEach(e => {
+    const item = document.createElement('div'); item.className = 'g-item';
+    item.innerHTML = `<div class="gi-lead" style="background:${e.dim};"><span class="msr" style="color:${e.color};">bar_chart</span></div><div class="gi-body"><div class="gi-title">${e.paper}</div><div class="gi-sub">${e.credits} Credits · Paper Pattern</div></div><div class="gi-trail"><span class="msr s20" style="color:${e.color};">chevron_right</span></div>`;
+    addRipple(item); wrap.appendChild(item);
+  });
+}
+
+function renderSyllabus() {
+  buildSubTabs('syl-tabs', sylTab, k => { sylTab = k; renderSyllabus(); });
+  const wrap = $('#syl-acc'); wrap.innerHTML = '';
+  const exam = EXAMS.find(e => e.short === sylTab);
+  (SYLLABUS[sylTab]||[]).forEach(unit => {
+    const item = document.createElement('div'); item.className = 'g-acc';
+    item.innerHTML = `<div class="g-acc-hd"><div class="g-acc-lead" style="background:${exam.dim};"><span class="msr" style="color:${exam.color};">menu_book</span></div><div class="g-acc-info"><div class="g-acc-title">${unit.title}</div><div class="g-acc-count">${unit.topics.length} topics</div></div><div class="g-acc-chevron"><span class="msr">expand_more</span></div></div><div class="g-acc-body">${unit.topics.map(t=>`<div class="g-acc-topic"><div class="g-acc-bullet" style="background:${exam.color};"></div><span>${t}</span></div>`).join('')}</div>`;
+    item.querySelector('.g-acc-hd').onclick = () => item.classList.toggle('open');
+    addRipple(item.querySelector('.g-acc-hd')); wrap.appendChild(item);
+  });
+}
+
+function init() {
+  renderHomeExams(); renderTT(); renderQbank(); renderPYQ(); renderSyllabus(); renderPattern(); renderNotes();
+  $$('.qg-card, .pdf-back-btn').forEach(el => addRipple(el));
+}
+init();
+</script>
+</body>
+</html>
