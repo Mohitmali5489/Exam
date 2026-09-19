@@ -452,20 +452,22 @@ function tickCD() {
   
   if (diff <= 0) {
     ['cd-d','cd-h','cd-m','cd-s'].forEach(id => $('#'+id).textContent = '00');
-    $('#cd-bar').style.width = '100\%'; $('#cd-pct').textContent = '100%'; return;
+  } else {
+    $('#cd-d').textContent = pad(Math.floor(diff / 86400000));
+    $('#cd-h').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+    $('#cd-m').textContent = pad(Math.floor((diff % 3600000)  / 60000));
+    $('#cd-s').textContent = pad(Math.floor((diff % 60000)    / 1000));
   }
   
-  $('#cd-d').textContent = pad(Math.floor(diff / 86400000));
-  $('#cd-h').textContent = pad(Math.floor((diff % 86400000) / 3600000));
-  $('#cd-m').textContent = pad(Math.floor((diff % 3600000)  / 60000));
-  $('#cd-s').textContent = pad(Math.floor((diff % 60000)    / 1000));
+  // PROGRESS BAR: Based on completed exams vs total exams
+  const totalExams = EXAMS.length;
+  const completedExams = EXAMS.filter(e => isDone(e)).length;
+  const pct = totalExams > 0 ? (completedExams / totalExams) * 100 : 0;
   
-  const anchor = new Date(next.dt.getTime() - (30 * 24 * 60 * 60 * 1000)); 
-  const pct = Math.min(100, Math.max(0, (now - anchor) / (next.dt - anchor) * 100));
-  $('#cd-bar').style.width = pct.toFixed(1)+'\%'; $('#cd-pct').textContent = pct.toFixed(0)+'%';
+  $('#cd-bar').style.width = pct.toFixed(1) + '%';
+  $('#cd-pct').textContent = Math.round(pct) + '%';
 }
 setInterval(tickCD, 1000);
-
 /* ═══════════════════════════════════════
    SHIMMER PRE-RENDER FUNCTION
 ═══════════════════════════════════════ */
