@@ -34,19 +34,19 @@
 .msr.fill-w5{ font-variation-settings: 'FILL' 1, 'wght' 500; }
 
 /* ══════════════════════════════════════
-   DESIGN TOKENS & RESET
+   DESIGN TOKENS (Updated to Logo Theme)
 ══════════════════════════════════════ */
 :root {
-  --md-primary:        #1A73E8;
-  --md-primary-dim:    #E8F0FE;
-  --md-primary-text:   #1967D2;
+  --md-primary:        #D81B60; /* Vibrant Pink/Red */
+  --md-primary-dim:    #FCE4EC;
+  --md-primary-text:   #C2185B;
+  --md-secondary:      #F5B041; /* Warm Yellow/Orange */
   --md-surface:        #FFFFFF;
   --md-bg:             #F8F9FA;
   --md-on-surface:     #202124;
   --md-on-surface-var: #5F6368;
   --md-outline:        #DADCE0;
   --md-error:          #EA4335;
-  --nav-h:             70px;
   --safe-b:            env(safe-area-inset-bottom, 0px);
   --radius-sm:         8px;
   --radius-md:         12px;
@@ -68,7 +68,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 }
 @media (min-height: 916px) and (min-width: 413px) { #app { border-radius: 28px; } }
 
-#body { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: calc(var(--nav-h) + var(--safe-b) + 12px); background: var(--md-bg); }
+#body { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: calc(var(--safe-b) + 24px); background: var(--md-bg); }
 #body::-webkit-scrollbar { display: none; }
 
 .view { display: none; }
@@ -91,22 +91,9 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 /* ══════════════════════════════
    SHIMMER LOADING EFFECT
 ══════════════════════════════ */
-@keyframes shimmer-anim {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-}
-.shimmer-bg {
-  background-color: #f1f3f4;
-  background-image: linear-gradient(90deg, #f1f3f4 0px, #e8eaed 40px, #f1f3f4 80px);
-  background-size: 600px 100%;
-  animation: shimmer-anim 1.5s infinite linear;
-}
-.shimmer-bg-dark {
-  background-color: rgba(255,255,255,0.1);
-  background-image: linear-gradient(90deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.2) 40px, rgba(255,255,255,0.1) 80px);
-  background-size: 600px 100%;
-  animation: shimmer-anim 1.5s infinite linear;
-}
+@keyframes shimmer-anim { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+.shimmer-bg { background-color: #f1f3f4; background-image: linear-gradient(90deg, #f1f3f4 0px, #e8eaed 40px, #f1f3f4 80px); background-size: 600px 100%; animation: shimmer-anim 1.5s infinite linear; }
+.shimmer-bg-dark { background-color: rgba(255,255,255,0.1); background-image: linear-gradient(90deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.2) 40px, rgba(255,255,255,0.1) 80px); background-size: 600px 100%; animation: shimmer-anim 1.5s infinite linear; }
 
 /* ══════════════════════════════
    COMPONENTS
@@ -126,10 +113,11 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 .sec-head-action { font-size: 13px; font-weight: 500; color: var(--md-primary); cursor: pointer; padding: 4px 8px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 2px; }
 
 .countdown-card { background: var(--md-surface); border-radius: var(--radius-xl); margin: 0 16px; overflow: hidden; box-shadow: var(--shadow-1); }
-.cd-banner { background: var(--md-primary); padding: 16px 20px 14px; }
-.cd-banner-eyebrow { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.8); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 6px; }
+/* Themed Gradient Banner */
+.cd-banner { background: linear-gradient(135deg, #D81B60 0%, #FF8F00 100%); padding: 16px 20px 14px; }
+.cd-banner-eyebrow { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,.9); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 6px; }
 .cd-banner-name { font-family: 'Google Sans', sans-serif; font-size: 17px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
-.cd-banner-meta { font-size: 12px; color: rgba(255,255,255,.75); display: flex; align-items: center; gap: 6px; }
+.cd-banner-meta { font-size: 12px; color: rgba(255,255,255,.85); display: flex; align-items: center; gap: 6px; }
 .cd-body { padding: 16px 20px 18px; }
 .cd-tiles { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
 .cd-tile { background: var(--md-primary-dim); border-radius: var(--radius-md); padding: 12px 4px; text-align: center; }
@@ -158,10 +146,11 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 .qg-icon { width: 48px; height: 48px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; }
 .qg-label { font-size: 11px; font-weight: 500; color: var(--md-on-surface); text-align: center; line-height: 1.3; }
 
-.view-strip { padding: 20px 16px 18px; }
-.vs-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; opacity: .8; }
+.view-strip { padding: 20px 16px 18px; position: relative; }
+.vs-top-row { display: flex; align-items: flex-start; justify-content: space-between; }
+.vs-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; opacity: .9; }
 .vs-title { font-family: 'Google Sans Display', sans-serif; font-size: 28px; font-weight: 700; line-height: 1.1; }
-.vs-sub { font-size: 13px; margin-top: 6px; opacity: .8; }
+.vs-sub { font-size: 13px; margin-top: 6px; opacity: .9; }
 
 .tt-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
 .tt-card { background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); overflow: hidden; cursor: pointer; position: relative; }
@@ -215,26 +204,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 .y-chip.active { background: var(--md-error); color: #fff; border-color: var(--md-error); }
 .y-chip.active .msr { color: #fff; }
 
-/* ══════════════════════════════
-   NAVIGATION BAR
-══════════════════════════════ */
-#nav-bar {
-  height: calc(var(--nav-h) + var(--safe-b)); padding-bottom: var(--safe-b);
-  background: var(--md-surface); border-top: 1px solid var(--md-outline);
-  display: flex; align-items: stretch; flex-shrink: 0; position: absolute; bottom: 0; width: 100%; z-index: 20;
-}
-.nav-dest { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; padding-top: 6px; position: relative; }
-.nav-pill { width: 64px; height: 32px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; transition: background .2s var(--ease); }
-.nav-dest.active .nav-pill { background: var(--md-primary-dim); }
-.nav-dest .msr { font-size: 22px; color: var(--md-on-surface-var); transition: color .2s; }
-.nav-dest.active .msr { color: var(--md-primary); font-variation-settings: 'FILL' 1, 'wght' 600; }
-.nav-label { font-size: 12px; font-weight: 500; color: var(--md-on-surface-var); letter-spacing: .4px; transition: color .2s; }
-.nav-dest.active .nav-label { color: var(--md-primary); font-weight: 600; }
-
-#snackbar { position: fixed; bottom: calc(var(--nav-h) + var(--safe-b) + 8px); left: 50%; transform: translateX(-50%) translateY(16px); background: #303030; color: #fff; padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: all .25s var(--ease); pointer-events: none; white-space: nowrap; box-shadow: 0 3px 8px rgba(0,0,0,.35); z-index: 999; display: flex; align-items: center; gap: 8px; }
+#snackbar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(16px); background: #303030; color: #fff; padding: 12px 20px; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: all .25s var(--ease); pointer-events: none; white-space: nowrap; box-shadow: 0 3px 8px rgba(0,0,0,.35); z-index: 999; display: flex; align-items: center; gap: 8px; }
 #snackbar.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 @keyframes ripple { to { transform: scale(2.5); opacity: 0; } }
-@keyframes ring { 0%,100% { box-shadow: 0 0 0 0 rgba(26,115,232,.55); } 60% { box-shadow: 0 0 0 7px rgba(26,115,232,0); } }
+@keyframes ring { 0%,100% { box-shadow: 0 0 0 0 rgba(216,27,96,.55); } 60% { box-shadow: 0 0 0 7px rgba(216,27,96,0); } }
 .pulse { animation: ring 2.2s infinite; }
 .pb16 { padding-bottom: 16px; }
 .empty-state { text-align: center; padding: 30px 16px; color: var(--md-on-surface-var); font-size: 14px; background: var(--md-surface); border-radius: var(--radius-xl); box-shadow: var(--shadow-1); margin: 0 16px; }
@@ -243,7 +216,6 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 <body>
 
 <div id="app">
-
   <div id="body">
     
     <!-- ─── HOME ─── -->
@@ -286,12 +258,12 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 
       <div class="sec-head"><div class="sec-head-title">Resources</div></div>
       <div class="quick-grid">
-        <div class="qg-card" onclick="navTo('qbank')"><div class="qg-icon" style="background:#E8F0FE;"><span class="msr s28 w300" style="color:#1A73E8;">quiz</span></div><div class="qg-label">Question Bank</div></div>
+        <div class="qg-card" onclick="navTo('qbank')"><div class="qg-icon" style="background:var(--md-primary-dim);"><span class="msr s28 w300" style="color:var(--md-primary);">quiz</span></div><div class="qg-label">Question Bank</div></div>
         <div class="qg-card" onclick="navTo('pyq')"><div class="qg-icon" style="background:#FCE8E6;"><span class="msr s28 w300" style="color:#EA4335;">history_edu</span></div><div class="qg-label">PYQ Papers</div></div>
         <div class="qg-card" onclick="navTo('syllabus')"><div class="qg-icon" style="background:#E6F4EA;"><span class="msr s28 w300" style="color:#34A853;">checklist</span></div><div class="qg-label">Syllabus</div></div>
         <div class="qg-card" onclick="navTo('pattern')"><div class="qg-icon" style="background:#FEF7E0;"><span class="msr s28 w300" style="color:#B06000;">bar_chart</span></div><div class="qg-label">Paper Pattern</div></div>
         <div class="qg-card" onclick="navTo('notes')"><div class="qg-icon" style="background:#F3E8FD;"><span class="msr s28 w300" style="color:#A142F4;">sticky_note_2</span></div><div class="qg-label">Notes</div></div>
-        <div class="qg-card" onclick="navTo('tt')"><div class="qg-icon" style="background:#E8F0FE;"><span class="msr s28 w300" style="color:#1A73E8;">calendar_month</span></div><div class="qg-label">Timetable</div></div>
+        <div class="qg-card" onclick="navTo('tt')"><div class="qg-icon" style="background:var(--md-primary-dim);"><span class="msr s28 w300" style="color:var(--md-primary);">calendar_month</span></div><div class="qg-label">Timetable</div></div>
       </div>
 
       <div class="sec-head">
@@ -316,9 +288,14 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 
     <!-- ─── TIMETABLE ─── -->
     <div class="view" id="view-tt">
-      <div class="view-strip" style="background:#1A73E8;color:#fff;">
-        <div class="vs-eyebrow">Exam Schedule</div>
-        <div class="vs-title" id="tt-title">Loading...</div>
+      <div class="view-strip" style="background:var(--md-primary);color:#fff;">
+        <div class="vs-top-row">
+          <div>
+            <div class="vs-eyebrow">Exam Schedule</div>
+            <div class="vs-title" id="tt-title">Loading...</div>
+          </div>
+          <div class="icon-btn" onclick="history.back()" style="margin:-8px -8px 0 0;"><span class="msr">close</span></div>
+        </div>
         <div class="vs-sub">Track your upcoming dates</div>
       </div>
       <div class="tt-list" id="tt-cards"></div>
@@ -326,50 +303,70 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 
     <!-- ─── QUESTION BANK ─── -->
     <div class="view" id="view-qbank">
-      <div class="view-strip" style="background:#1A73E8;color:#fff;"><div class="vs-eyebrow">Study Tool</div><div class="vs-title">Question Bank</div><div class="vs-sub">Important questions per paper</div></div>
+      <div class="view-strip" style="background:var(--md-primary);color:#fff;">
+        <div class="vs-top-row">
+          <div><div class="vs-eyebrow">Study Tool</div><div class="vs-title">Question Bank</div></div>
+          <div class="icon-btn" onclick="history.back()" style="margin:-8px -8px 0 0;"><span class="msr">close</span></div>
+        </div>
+        <div class="vs-sub">Important questions per paper</div>
+      </div>
       <div class="sub-tabs" id="qbank-tabs"></div><div style="height:8px;"></div>
       <div class="notes-wrap" id="qbank-list"></div><div class="pb16"></div>
     </div>
 
     <!-- ─── PYQ ─── -->
     <div class="view" id="view-pyq">
-      <div class="view-strip" style="background:#EA4335;color:#fff;"><div class="vs-eyebrow">Practice</div><div class="vs-title">Previous Year Papers</div><div class="vs-sub">Real exam papers from past years</div></div>
+      <div class="view-strip" style="background:#EA4335;color:#fff;">
+        <div class="vs-top-row">
+          <div><div class="vs-eyebrow">Practice</div><div class="vs-title">Past Papers</div></div>
+          <div class="icon-btn" onclick="history.back()" style="margin:-8px -8px 0 0;"><span class="msr">close</span></div>
+        </div>
+        <div class="vs-sub">Real exam papers from past years</div>
+      </div>
       <div class="year-scroller" id="pyq-years"></div>
       <div class="list-section" id="pyq-list"></div>
     </div>
 
     <!-- ─── SYLLABUS ─── -->
     <div class="view" id="view-syllabus">
-      <div class="view-strip" style="background:#34A853;color:#fff;"><div class="vs-eyebrow">Reference</div><div class="vs-title">Syllabus</div><div class="vs-sub">Unit-wise topics for all papers</div></div>
+      <div class="view-strip" style="background:#34A853;color:#fff;">
+        <div class="vs-top-row">
+          <div><div class="vs-eyebrow">Reference</div><div class="vs-title">Syllabus</div></div>
+          <div class="icon-btn" onclick="history.back()" style="margin:-8px -8px 0 0;"><span class="msr">close</span></div>
+        </div>
+        <div class="vs-sub">Unit-wise topics for all papers</div>
+      </div>
       <div class="sub-tabs" id="syl-tabs"></div><div style="height:8px;"></div>
       <div class="g-accordion" id="syl-acc"></div><div class="pb16"></div>
     </div>
 
     <!-- ─── PATTERN ─── -->
     <div class="view" id="view-pattern">
-      <div class="view-strip" style="background:#F9AB00;color:#202124;"><div class="vs-eyebrow" style="color:#5F6368;">Reference</div><div class="vs-title">Paper Pattern</div><div class="vs-sub" style="opacity:.7;">Marks scheme & exam structure</div></div>
+      <div class="view-strip" style="background:#F9AB00;color:#202124;">
+        <div class="vs-top-row">
+          <div><div class="vs-eyebrow" style="color:#5F6368;">Reference</div><div class="vs-title">Paper Pattern</div></div>
+          <div class="icon-btn" onclick="history.back()" style="margin:-8px -8px 0 0;"><span class="msr">close</span></div>
+        </div>
+        <div class="vs-sub" style="opacity:.7;">Marks scheme & exam structure</div>
+      </div>
       <div style="height:12px;"></div>
       <div class="list-section" id="pattern-list"></div><div class="pb16"></div>
     </div>
 
     <!-- ─── NOTES ─── -->
     <div class="view" id="view-notes">
-      <div class="view-strip" style="background:#A142F4;color:#fff;"><div class="vs-eyebrow">Study Material</div><div class="vs-title">Notes</div><div class="vs-sub">Chapter-wise revision material</div></div>
+      <div class="view-strip" style="background:#A142F4;color:#fff;">
+        <div class="vs-top-row">
+          <div><div class="vs-eyebrow">Study Material</div><div class="vs-title">Notes</div></div>
+          <div class="icon-btn" onclick="history.back()" style="margin:-8px -8px 0 0;"><span class="msr">close</span></div>
+        </div>
+        <div class="vs-sub">Chapter-wise revision material</div>
+      </div>
       <div class="sub-tabs" id="notes-tabs"></div><div style="height:8px;"></div>
       <div class="notes-wrap" id="notes-list"></div><div class="pb16"></div>
     </div>
 
   </div><!-- /body -->
-
-  <!-- NAVIGATION BAR -->
-  <div id="nav-bar">
-    <div class="nav-dest active" data-view="home" onclick="navTo('home')"><div class="nav-pill"><span class="msr">home</span></div><div class="nav-label">Home</div></div>
-    <div class="nav-dest" data-view="tt" onclick="navTo('tt')"><div class="nav-pill"><span class="msr">calendar_month</span></div><div class="nav-label">Schedule</div></div>
-    <div class="nav-dest" data-view="qbank" onclick="navTo('qbank')"><div class="nav-pill"><span class="msr">quiz</span></div><div class="nav-label">Q.Bank</div></div>
-    <div class="nav-dest" data-view="syllabus" onclick="navTo('syllabus')"><div class="nav-pill"><span class="msr">checklist</span></div><div class="nav-label">Syllabus</div></div>
-    <div class="nav-dest" data-view="notes" onclick="navTo('notes')"><div class="nav-pill"><span class="msr">sticky_note_2</span></div><div class="nav-label">Notes</div></div>
-  </div>
-
 </div>
 <div id="snackbar"></div>
 
@@ -377,7 +374,6 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: #E8EAED; d
 /* ═══════════════════════════════════════
    SUPABASE INITIALIZATION & STATE
 ═══════════════════════════════════════ */
-// FIXED: Renamed the variable to 'supabaseClient' to avoid conflicting with the global 'window.supabase'
 const supabaseUrl = 'https://bhapahazfsxtozpuftvm.supabase.co';
 const supabaseKey = 'sb_publishable_hQXxIGqbJGE_8OXYzymg6g_IRbbtWal';
 const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -388,11 +384,9 @@ let qbankTab = '', sylTab = '', notesTab = '', pyqYear = '';
 /* ═══════════════════════════════════════
    UTILS
 ═══════════════════════════════════════ */
-const $  = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
+const $  = s => document.querySelector(s); const $$ = s => [...document.querySelectorAll(s)];
 const pad = n => String(n).padStart(2,'0');
 
-// Converts "02:30 p.m." to "14:30:00" for exact Date construction
 function parseTime(timeStr) {
   const match = timeStr.match(/(\d+):(\d+)\s*(a\.m\.|p\.m\.|am|pm)/i);
   if(!match) return '00:00:00';
@@ -407,11 +401,7 @@ const getNext = () => EXAMS.find(e => !isDone(e)) || EXAMS[EXAMS.length - 1];
 
 function getDisplayDate(dateStr) {
   const d = new Date(dateStr);
-  return {
-    dayNum: d.getDate(),
-    monthStr: d.toLocaleString('en-US', { month: 'short' }),
-    full: d.toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })
-  };
+  return { dayNum: d.getDate(), monthStr: d.toLocaleString('en-US', { month: 'short' }), full: d.toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) };
 }
 
 function addRipple(el, color = 'rgba(0,0,0,.07)') {
@@ -431,44 +421,22 @@ function toast(msg, icon = 'info') {
   clearTimeout(_sb); _sb = setTimeout(() => el.classList.remove('show'), 2600);
 }
 
-// Opens PDF in new tab/window natively 
 function openPdf(url) {
   if(!url) { toast('PDF Link not available', 'error'); return; }
   window.open(url, '_blank');
 }
 
 /* ═══════════════════════════════════════
-   HISTORY-AWARE NAVIGATION (MOBILE BACK BUTTON)
+   HISTORY-AWARE NAVIGATION
 ═══════════════════════════════════════ */
 let currentView = 'home';
 history.replaceState({ view: 'home' }, '', '#home');
 
 function navTo(view, pushState = true) {
   $$('.view').forEach(v => v.classList.remove('active'));
-  $$('.nav-dest').forEach(n => n.classList.remove('active'));
-  
   const el = $(`#view-${view}`);
   if (el) { el.classList.add('active'); $('#body').scrollTop = 0; }
-  
-  const ni = $(`.nav-dest[data-view="${view}"]`);
-  if (ni) ni.classList.add('active');
-
-  // Handle Search Input Focus
-  if(view === 'search') setTimeout(() => $('#search-input').focus(), 100);
-
-  if (pushState && currentView !== view) {
-    history.pushState({ view: view }, '', '#' + view);
-  }
-  currentView = view;
-}
-
-window.addEventListener('popstate', (e) => {
-  if (e.state && e.state.view) navTo(e.state.view, false);
-  else navTo('home', false);
-});
-
-function chipClick(el, view) {
-  $$('#home-chips .md-chip').forEach(c => c.classList.remove('active'));
+  if(view === 'search') setTimeout(() => $('#search-input').focus(), 100);   if (pushState && currentView !== view) history.pushState({ view: view }, '', '#' + view);   currentView = view; }  window.addEventListener('popstate', (e) => {   if (e.state && e.state.view) navTo(e.state.view, false);   else navTo('home', false); });  function chipClick(el, view) {   $$('#home-chips .md-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   if (view !== 'home') navTo(view);
 }
@@ -484,7 +452,7 @@ function tickCD() {
   
   if (diff <= 0) {
     ['cd-d','cd-h','cd-m','cd-s'].forEach(id => $('#'+id).textContent = '00');
-    $('#cd-bar').style.width = '100%'; $('#cd-pct').textContent = '100%'; return;
+    $('#cd-bar').style.width = '100\%'; $('#cd-pct').textContent = '100%'; return;
   }
   
   $('#cd-d').textContent = pad(Math.floor(diff / 86400000));
@@ -492,10 +460,9 @@ function tickCD() {
   $('#cd-m').textContent = pad(Math.floor((diff % 3600000)  / 60000));
   $('#cd-s').textContent = pad(Math.floor((diff % 60000)    / 1000));
   
-  // Anchor date logic (defaults to 30 days prior to next exam for progress bar)
   const anchor = new Date(next.dt.getTime() - (30 * 24 * 60 * 60 * 1000)); 
   const pct = Math.min(100, Math.max(0, (now - anchor) / (next.dt - anchor) * 100));
-  $('#cd-bar').style.width = pct.toFixed(1)+'%'; $('#cd-pct').textContent = pct.toFixed(0)+'%';
+  $('#cd-bar').style.width = pct.toFixed(1)+'\%'; $('#cd-pct').textContent = pct.toFixed(0)+'%';
 }
 setInterval(tickCD, 1000);
 
@@ -503,64 +470,24 @@ setInterval(tickCD, 1000);
    SHIMMER PRE-RENDER FUNCTION
 ═══════════════════════════════════════ */
 function showShimmers() {
-  const noteShimmer = `
-    <div class="note-card" style="box-shadow:none; border:1px solid var(--md-outline);">
-      <div class="note-icon shimmer-bg"></div>
-      <div class="note-body">
-        <div class="shimmer-bg" style="height:14px; width:70%; border-radius:4px; margin-bottom:6px;"></div>
-        <div class="shimmer-bg" style="height:12px; width:40%; border-radius:4px;"></div>
-      </div>
-    </div>
-  `.repeat(4);
+  const noteShimmer = `<div class="note-card" style="box-shadow:none; border:1px solid var(--md-outline);"><div class="note-icon shimmer-bg"></div><div class="note-body"><div class="shimmer-bg" style="height:14px; width:70%; border-radius:4px; margin-bottom:6px;"></div><div class="shimmer-bg" style="height:12px; width:40%; border-radius:4px;"></div></div></div>`.repeat(4);
+  const listShimmer = `<div class="g-item" style="box-shadow:none; border:1px solid var(--md-outline);"><div class="gi-lead shimmer-bg" style="border-radius:var(--radius-md);"></div><div class="gi-body"><div class="shimmer-bg" style="height:14px; width:70%; border-radius:4px; margin-bottom:6px;"></div><div class="shimmer-bg" style="height:12px; width:40%; border-radius:4px;"></div></div></div>`.repeat(4);
+  const examShimmer = `<div class="exam-card" style="box-shadow:none; border:1px solid var(--md-outline);"><div class="ec-date shimmer-bg"></div><div class="ec-info"><div class="shimmer-bg" style="height:14px; width:80%; border-radius:4px; margin-bottom:6px;"></div><div class="shimmer-bg" style="height:12px; width:50%; border-radius:4px;"></div></div></div>`.repeat(3);
+  const tabShimmer = `<div style="display:flex; gap:8px; padding:14px 16px;"><div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div><div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div><div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div></div>`;
 
-  const listShimmer = `
-    <div class="g-item" style="box-shadow:none; border:1px solid var(--md-outline);">
-      <div class="gi-lead shimmer-bg" style="border-radius:var(--radius-md);"></div>
-      <div class="gi-body">
-        <div class="shimmer-bg" style="height:14px; width:70%; border-radius:4px; margin-bottom:6px;"></div>
-        <div class="shimmer-bg" style="height:12px; width:40%; border-radius:4px;"></div>
-      </div>
-    </div>
-  `.repeat(4);
-
-  const examShimmer = `
-    <div class="exam-card" style="box-shadow:none; border:1px solid var(--md-outline);">
-      <div class="ec-date shimmer-bg"></div>
-      <div class="ec-info">
-        <div class="shimmer-bg" style="height:14px; width:80%; border-radius:4px; margin-bottom:6px;"></div>
-        <div class="shimmer-bg" style="height:12px; width:50%; border-radius:4px;"></div>
-      </div>
-    </div>
-  `.repeat(3);
-
-  const tabShimmer = `
-    <div style="display:flex; gap:8px; padding:14px 16px;">
-      <div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div>
-      <div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div>
-      <div class="shimmer-bg" style="height:20px; width:60px; border-radius:4px;"></div>
-    </div>
-  `;
-
-  // Inject Shimmers everywhere
   $('#cd-name').innerHTML = '<div class="shimmer-bg-dark" style="height:20px; width:60%; border-radius:4px; margin:2px 0;"></div>';
   $('#cd-meta').innerHTML = '<div class="shimmer-bg-dark" style="height:14px; width:40%; border-radius:4px;"></div>';
-  
   $('#home-exams').innerHTML = examShimmer;
   $('#tt-cards').innerHTML = examShimmer;
-  
   $('#qbank-tabs').innerHTML = tabShimmer;
   $('#qbank-list').innerHTML = noteShimmer;
-  
   $('#pyq-list').innerHTML = listShimmer;
   $('#pattern-list').innerHTML = listShimmer;
-  
   $('#syl-tabs').innerHTML = tabShimmer;
   $('#syl-acc').innerHTML = listShimmer;
-
   $('#notes-tabs').innerHTML = tabShimmer;
   $('#notes-list').innerHTML = noteShimmer;
 }
-
 
 /* ═══════════════════════════════════════
    RENDER UI
@@ -573,10 +500,7 @@ function renderHomeExams() {
     const dObj = getDisplayDate(e.exam_date);
     const card = document.createElement('div');
     card.className = 'exam-card' + (done ? ' done' : '');
-    card.innerHTML = `
-      <div class="ec-date" style="background:${done?'#F1F3F4':e.dim};"><div class="ec-day" style="color:${done?'#9AA0A6':e.color};">${dObj.dayNum}</div><div class="ec-month" style="color:${done?'#9AA0A6':e.color};">${dObj.monthStr}</div></div>
-      <div class="ec-info"><div class="ec-paper">${e.paper}</div><div class="ec-sub">${e.exam_day} · ${e.start_time} – ${e.end_time}</div></div>
-      <div class="ec-right"><div class="ec-cred" style="background:${done?'#F1F3F4':e.dim};color:${done?'#9AA0A6':e.color};">${done ? 'Done' : e.credits+' Cr'}</div>${isNext ? `<div class="pulse-dot pulse" style="background:${e.color};"></div>` : ''}</div>`;
+    card.innerHTML = `<div class="ec-date" style="background:${done?'#F1F3F4':e.dim};"><div class="ec-day" style="color:${done?'#9AA0A6':e.color};">${dObj.dayNum}</div><div class="ec-month" style="color:${done?'#9AA0A6':e.color};">${dObj.monthStr}</div></div><div class="ec-info"><div class="ec-paper">${e.paper}</div><div class="ec-sub">${e.exam_day} · ${e.start_time} – ${e.end_time}</div></div><div class="ec-right"><div class="ec-cred" style="background:${done?'#F1F3F4':e.dim};color:${done?'#9AA0A6':e.color};">${done ? 'Done' : e.credits+' Cr'}</div>${isNext ? `<div class="pulse-dot pulse" style="background:${e.color};"></div>` : ''}</div>`;
     card.onclick = () => navTo('tt');
     addRipple(card); wrap.appendChild(card);
   });
@@ -658,7 +582,6 @@ function renderSyllabus() {
   units.forEach(unit => {
     const item = document.createElement('div'); item.className = 'g-acc';
     let topics = typeof unit.topics === 'string' ? JSON.parse(unit.topics) : unit.topics;
-    
     item.innerHTML = `<div class="g-acc-hd"><div class="g-acc-lead" style="background:${exam.dim};"><span class="msr" style="color:${exam.color};">menu_book</span></div><div class="g-acc-info"><div class="g-acc-title">${unit.title}</div><div class="g-acc-count">${topics.length} topics</div></div><div class="g-acc-chevron"><span class="msr">expand_more</span></div></div><div class="g-acc-body">${topics.map(t => `<div class="g-acc-topic"><div class="g-acc-bullet" style="background:${exam.color};"></div><span>${t}</span></div>`).join('')}</div>`;
     item.querySelector('.g-acc-hd').onclick = () => item.classList.toggle('open');
     addRipple(item.querySelector('.g-acc-hd'), 'rgba(26,115,232,.07)'); wrap.appendChild(item);
@@ -743,39 +666,28 @@ $('#search-input').addEventListener('input', (e) => {
    DATA FETCHING (INIT APP)
 ═══════════════════════════════════════ */
 async function initApp() {
-  // 1. Immediately show shimmers in all lists before the network request
   showShimmers();
 
   try {
-    // 2. Fetch data via supabaseClient
     const [examsRes, qbankRes, notesRes, sylRes, pyqRes, pyqYearsRes] = await Promise.all([
-      supabaseClient.from('exams').select('*').order('exam_date', { ascending: true }),
-      supabaseClient.from('qbank').select('*'),
-      supabaseClient.from('notes').select('*'),
-      supabaseClient.from('syllabus').select('*').order('unit_order', { ascending: true }),
-      supabaseClient.from('pyqs').select('*'),
-      supabaseClient.from('pyq_years').select('*').order('year_range', { ascending: false })
+      supabaseClient.from('exams').select('*').eq('is_active', true).order('exam_date', { ascending: true }),
+      supabaseClient.from('qbank').select('*').eq('is_active', true),
+      supabaseClient.from('notes').select('*').eq('is_active', true),
+      supabaseClient.from('syllabus').select('*').eq('is_active', true).order('unit_order', { ascending: true }),
+      supabaseClient.from('pyqs').select('*').eq('is_active', true),
+      supabaseClient.from('pyq_years').select('*').eq('is_active', true).order('year_range', { ascending: false })
     ]);
 
-    EXAMS = (examsRes.data || []).map(e => ({
-      ...e, dt: new Date(e.exam_date + 'T' + parseTime(e.start_time))
-    }));
-    
+    EXAMS = (examsRes.data || []).map(e => ({ ...e, dt: new Date(e.exam_date + 'T' + parseTime(e.start_time)) }));
     QBANK = qbankRes.data || [];
     NOTES = notesRes.data || [];
     SYLLABUS = sylRes.data || [];
     PYQS = pyqRes.data || [];
     PYQ_YEARS = (pyqYearsRes.data || []).map(y => y.year_range);
 
-    // Default Tabs
-    if (EXAMS.length > 0) {
-      qbankTab = EXAMS[0].short_name;
-      sylTab = EXAMS[0].short_name;
-      notesTab = EXAMS[0].short_name;
-    }
+    if (EXAMS.length > 0) { qbankTab = EXAMS[0].short_name; sylTab = EXAMS[0].short_name; notesTab = EXAMS[0].short_name; }
     if (PYQ_YEARS.length > 0) pyqYear = PYQ_YEARS[0];
 
-    // 3. Render real data (overwriting the shimmers)
     renderHomeExams();
     renderTT();
     renderQbank();
@@ -793,7 +705,6 @@ async function initApp() {
   }
 }
 
-// Start
 initApp();
 </script>
 </body>
